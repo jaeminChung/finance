@@ -2,6 +2,7 @@ import urllib.request
 import re
 import urllib.parse
 import pandas as pd
+from sqlalchemy import create_engine
 
 MARKET_CODE_DICT = {
     'kospi': 'stockMkt',
@@ -87,13 +88,21 @@ def save_stock_info(url, page):
         save_stock_info(url, next_page)
 
 
+def get_postgres_engine():
+    engine = create_engine('postgresql://pi:skatks123@localhost:5432/finance', echo=True)
+    return engine
+
+
+def save_stock_codes():
+    engine = get_postgres_engine()
+    kospi_stocks = download_stock_codes('kospi')
+    kospi_stocks.to_sql('종목',engine, if_exists='append')
+
+    
 # need to be edited
 stock_cd = '005930'
 
 base_url = 'http://finance.daum.net/item/quote_yyyymmdd_sub.daum?code=005930&modify=1=&page='
 
 #save_stock_info(base_url, 1)
-
-kospi_stocks = download_stock_codes('kospi')
-print(kospi_stocks.head())
 
