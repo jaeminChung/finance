@@ -3,7 +3,12 @@ import re
 import urllib.parse
 import pandas as pd
 from sqlalchemy import create_engine
-
+"""
+TODO
+[ ] engine은 싱글톤으로
+[ ] sqlalchemy, stock_code, stock_info를 클래스로
+[ ] web interface
+"""
 MARKET_CODE_DICT = {
     'kospi': 'stockMkt',
     'kosdaq': 'kosdaqMkt',
@@ -11,9 +16,10 @@ MARKET_CODE_DICT = {
 }
 
 DOWNLOAD_URL = 'kind.krx.co.kr/corpgeneral/corpList.do'
-
+STOCK_INFO_URL = 'http://finance.daum.net/item/quote_yyyymmdd_sub.daum?modify=1=&code={code}&page='
 
 def download_stock_codes(market=None, delisted=False):
+    """MARKET_CODE_DICT 중 하나의 종목코드 정보 전체를 DataFrame으로 가져온다."""
     params = {'method': 'download'}
 
     if market.lower() in MARKET_CODE_DICT:
@@ -31,7 +37,15 @@ def download_stock_codes(market=None, delisted=False):
     return df
 
 
+def save_stock_codes():
+    """코스피 전체 종목 정보를 '종목' 테이블에 저장한다."""
+    engine = get_postgres_engine()
+    kospi_stocks = download_stock_codes('kospi')
+    kospi_stocks.to_sql('종목',engine, if_exists='append')
+
+
 def visit_page(url):
+    """url을 방문하여 html을 UTF-8로 인코딩하여 리턴한다."""
     try:
         page = urllib.request.urlopen(url)
     except urllib.request.HTTPError as e:
@@ -41,6 +55,7 @@ def visit_page(url):
 
 
 def extract_stock_info(html):
+    """다음 일일주가정보 페이지에서 주가정보 부분만 추출한다."""
     pattern = r'(?ims)<td class="datetime2">(\d{2}\.\d{2}.\d{2})</td>\s+'
     pattern = pattern + r'((<td class="num">[\d,]+</td>\s*){4})'
     pattern = pattern + r'.*?(<td class="num">[\d,]+</td>)'
@@ -49,6 +64,7 @@ def extract_stock_info(html):
 
 
 def extract_daily_info(info):
+    """extract_stock_info에서 추출된 주가정보중 일자별 주가정보를 추출한다."""
     daily_info = {}
     daily_info['날짜'] = info[0]
     
@@ -64,9 +80,9 @@ def extract_daily_info(info):
 
     daily_info['거래량'] = tran_volumn[0]
 
-#    print(daily_info)
     
 def get_next_page(html, page):
+    """다음 페이지 번호를 추출한다."""
     pattern = r'(?im)<span class="on">.+?</span>.+?javascript:goPage\(\'(\d+)\''
     next_page = re.findall(pattern, html)
     if len(next_page) > 0:
@@ -76,6 +92,7 @@ def get_next_page(html, page):
 
 
 def save_stock_info(url, page):
+    """특정 페이지의 일자별 주가정보를 모두 추출하여 테이블에 저장한다."""
     page_html = visit_page(url+str(page))
     stock_info = extract_stock_info(page_html)
     for info in stock_info:
@@ -89,20 +106,15 @@ def save_stock_info(url, page):
 
 
 def get_postgres_engine():
-    engine = create_engine('postgresql://pi:skatks123@localhost:5432/finance', echo=True)
-    return engine
+    """SQLAlchemy engine 객체를 리턴한다."""
+    _engine = create_engine('postgresql://pi:skatks123@localhost:5432/finance', echo=True)
+    return _engine
 
 
-def save_stock_codes():
-    engine = get_postgres_engine()
-    kospi_stocks = download_stock_codes('kospi')
-    kospi_stocks.to_sql('종목',engine, if_exists='append')
-
+def save_all_stock_info(base_url):
+    #종목코드 조회
+    #종목코드별 일일주가정보저장
     
-# need to be edited
-stock_cd = '005930'
-
-base_url = 'http://finance.daum.net/item/quote_yyyymmdd_sub.daum?code=005930&modify=1=&page='
-
-#save_stock_info(base_url, 1)
+    
+save_all_stock_info(STOCK_INFO_URL)
 
