@@ -13,9 +13,9 @@
 
 class FinanceConfig(object):
     #: 데이터베이스 연결 URL
-    DB_URL= 'sqlite:///'
+    DB_URL= 'postgresql://pi:skatks123@192.168.0.8:5432'
     #: 데이터베이스 파일 경로
-    DB_FILE_PATH= 'resource/database/finance'
+    DB_FILE_PATH= '/finance'
     #: 세션 타임아웃은 초(second) 단위(60분)
     PERMANENT_SESSION_LIFETIME = 60 * 60
     #: 쿠기에 저장되는 세션 쿠키

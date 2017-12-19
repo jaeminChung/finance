@@ -17,7 +17,7 @@ from finance.model import Base
 class StockPrice(Base):
     __tablename__ = '일별주가'
     
-    stock_cd = Column(String(10), primary_key=True, ForeignKey(Stock.stock_cd))
+    stock_cd = Column(String(10), ForeignKey(Stock.stock_cd), primary_key=True)
     trading_date = Column(DateTime, primary_key=True)
     start_price = Column(Integer, unique=False)
     max_price = Column(Integer, unique=False)

@@ -10,7 +10,7 @@
 from sqlalchemy import Column, Integer, String
 from sqlalchemy.orm import relationship
 
-from photolog.model import Base
+from finance.model import Base
 
 
 class Stock(Base):
