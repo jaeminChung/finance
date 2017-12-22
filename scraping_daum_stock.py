@@ -1,12 +1,12 @@
-import urllib.request
 import re
 import urllib.parse
+import urllib.request
+
 import pandas as pd
 from sqlalchemy import create_engine
+
 """
 TODO
-[ ] engine은 싱글톤으로
-[ ] sqlalchemy, stock_code, stock_info를 클래스로
 [ ] web interface
 """
 MARKET_CODE_DICT = {
