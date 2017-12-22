@@ -7,25 +7,24 @@
 """
 
 
-from flask import render_template, request, current_app, session, redirect \
-                 , url_for
-from functools import wraps
-from werkzeug import check_password_hash
-from wtforms import Form, TextField, PasswordField, HiddenField,
+from flask import render_template, Response, redirect \
+                , url_for
+from finance.finance_blueprint import finance
+import time
 
-
-@app.route('/page')
+@finance.route('/page')
 def get_page():
-    return send_file('templates/progress.html')
+    # return redirect(url_for('.progress'))
+    return render_template('progress.html')
 
 
-@app.route('/progress')
+@finance.route('/progress')
 def progress():
     def generate():
         x = 0
-        while x < 100:
-            print x
-            x = x + 10
-            time.sleep(0.2)
+        while x < 110:
             yield "data:" + str(x) + "\n\n"
+            x = x + 10
+            time.sleep(0.5)
+
     return Response(generate(), mimetype= 'text/event-stream')

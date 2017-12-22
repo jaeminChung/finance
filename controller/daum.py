@@ -16,7 +16,7 @@ from wtforms import Form, TextField, PasswordField, HiddenField, validators
 from finance.database import dao
 from finance.finance_logger import Log
 from finance.finance_blueprint import finance
-import urllib2, re, os, json
+import urllib.request, re, os, json
 from os import path
 
 def saveToon(filename, imgURL):
@@ -27,12 +27,12 @@ def saveToon(filename, imgURL):
        'Referer': 'http://webtoon.daum.net/#day=wed&tab=day',
        'Connection': 'keep-alive'}
 
-    req = urllib2.Request(imgURL, headers=hdr)
+    req = urllib.request(imgURL, headers=hdr)
 
     try:
-        img = urllib2.urlopen(req)
-    except urllib2.HTTPError, e:
-        print e.fp.read()
+        img = urllib.request.urlopen(req)
+    except(urllib.request.HTTPError, e):
+        print(e.fp.read())
 
     file = open(filename, 'wb')
     file.write(img.read())
@@ -42,7 +42,7 @@ def collectCartoonList(url, title) :
     if not os.access(title, os.F_OK):
         os.makedirs(title)
         
-    listhtml = urllib2.urlopen('%sview/%s?timeStamp=' % (url, title)).read()
+    listhtml = urllib.request.urlopen('%sview/%s?timeStamp=' % (url, title)).read()
     listjson = json.loads(listhtml)
     ids = []
     for episode in listjson['data']['webtoon']['webtoonEpisodes']:
@@ -52,7 +52,7 @@ def collectCartoonList(url, title) :
     print('Total episode count : %s' % total)
     
     for no, epid in enumerate(ids):
-        ephtml = urllib2.urlopen('%s/viewer_images/%s' % (url, epid)).read()
+        ephtml = urllib.request.urlopen('%s/viewer_images/%s' % (url, epid)).read()
         epjson = json.loads(ephtml)
         for epimage in epjson['data']:
             fileName = '%s/%s%s.png' % (title, str(no+1).zfill(4), str(epimage['imageOrder']).zfill(2))

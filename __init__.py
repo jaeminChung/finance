@@ -68,6 +68,7 @@ def create_app(config_filepath='resource/config.cfg'):
     # 뷰 함수가 있는 모듈을 임포트해야 해당 뷰 함수들을 인식할 수 있음
     from finance.controller import index
     from finance.controller import daum
+    from finance.controller import progress
     
     from finance.finance_blueprint import finance
     finance_app.register_blueprint(finance)
@@ -79,8 +80,8 @@ def create_app(config_filepath='resource/config.cfg'):
     finance_app.session_interface = SimpleCacheSessionInterface()
     
     # 공통으로 적용할 HTTP 404과 500 에러 핸들러를 설정
-    finance_app.error_handler_spec[None][404] = not_found
-    finance_app.error_handler_spec[None][500] = server_error
+    # finance_app.error_handler_spec[None][404] = not_found
+    # finance_app.error_handler_spec[None][500] = server_error
     
     # 페이징 처리를 위한 템플릿 함수
     finance_app.jinja_env.globals['url_for_other_page'] = \
