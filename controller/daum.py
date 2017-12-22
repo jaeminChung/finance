@@ -69,4 +69,26 @@ collectCartoonList(baseurl, titleId)
 def daum():
     """다음 만화 목록 표시해야하지만,
        일단 만화 아이디 받아서 내려받기"""
-    return render_template('index.html')
+    title_id = request.args.get('title_id', '')
+    form = DaumCartoonForm(request.form)
+    
+    return render_template('daum.html',
+                           form=form,
+                           title_id=title_id)
+
+@finance.route('/daum', methods=['POST'])
+def download_cartoon():
+    if form.validate():
+        session.permanent = True
+
+        title_id = form.title_id.data
+        base_url = 'http://webtoon.daum.net/data/pc/webtoon/'
+        collectCartoonList(base_url, title_id)
+        
+
+
+class DaumCartoonForm(Form):
+    """내려받을 다음만화 아이디를 입력받음"""
+    title_id = \
+               TextField('Title Id',
+                         [validators.Required('만화ID를 입력하세요.')])
