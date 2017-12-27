@@ -41,7 +41,7 @@ def save_stock_codes():
     """코스피 전체 종목 정보를 '종목' 테이블에 저장한다."""
     engine = get_postgres_engine()
     kospi_stocks = download_stock_codes('kospi')
-    kospi_stocks.to_sql('종목',engine, if_exists='append')
+    kospi_stocks.to_sql('종목', engine, if_exists='append')
 
 
 def visit_page(url):
