@@ -69,6 +69,7 @@ def create_app(config_filepath='resource/config.cfg'):
     from finance.controller import index
     from finance.controller import daum_cartoon
     from finance.controller import progress
+    from finance.controller import scraping_daum_stock
     
     from finance.finance_blueprint import finance
     finance_app.register_blueprint(finance)

@@ -1,25 +1,32 @@
+# -*- coding: utf-8 -*-
+"""
+    finance.controller.scraping_daum_stock
+    ~~~~~~~~~~~~~~~~~~~~~~~~~
+
+    종목정보 조회, 주가 정보 저장
+"""
+
+from flask import render_template, request
+
 import re
 import urllib.parse
 import urllib.request
 
 import pandas as pd
 from sqlalchemy import create_engine
-
-"""
-TODO
-[ ] web interface
-"""
-MARKET_CODE_DICT = {
-    'kospi': 'stockMkt',
-    'kosdaq': 'kosdaqMkt',
-    'konex': 'konexMkt'
-}
-
-DOWNLOAD_URL = 'kind.krx.co.kr/corpgeneral/corpList.do'
-STOCK_INFO_URL = 'http://finance.daum.net/item/quote_yyyymmdd_sub.daum?modify=1=&code={code}&page='
+from finance.database import dao
+from finance.model.stock import Stock
+from finance.finance_blueprint import finance
 
 def download_stock_codes(market=None, delisted=False):
     """MARKET_CODE_DICT 중 하나의 종목코드 정보 전체를 DataFrame으로 가져온다."""
+    DOWNLOAD_URL = 'kind.krx.co.kr/corpgeneral/corpList.do'
+
+    MARKET_CODE_DICT = {
+        'kospi': 'stockMkt',
+        'kosdaq': 'kosdaqMkt',
+        'konex': 'konexMkt'
+    }
     params = {'method': 'download'}
 
     if market.lower() in MARKET_CODE_DICT:
@@ -111,10 +118,24 @@ def get_postgres_engine():
     return _engine
 
 
-def save_all_stock_info(base_url):
+@finance.route('/show_stock_list')
+def show_stock_list():
+    stock_list = dao.query(Stock).order_by(Stock.company_name.asc()).all()
+    
+    return render_template('show_stock_list.html',
+                           stocks=stock_list)
+
+
+@finance.route('/save_stock_info/<stock_code>')
+def save_all_stock_info(stock_code):
     #종목코드 조회
     #종목코드별 일일주가정보저장
+    STOCK_INFO_URL = \
+        'http://finance.daum.net/item/quote_yyyymmdd_sub.daum?modify=1=&code={code}&page='
+
+    if stock_code :
+        save_stock_info(STOCK_INFO_URL.replace('{code}', code))
     
-    
-save_all_stock_info(STOCK_INFO_URL)
+    return render_template('save_stock_info.html',
+                           stock_code=stock_code)
 

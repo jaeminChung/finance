@@ -1,0 +1,44 @@
+{% extends "layout.html" %}
+{% block title %}Show stock list{% endblock %}
+{% block head %}
+  {{ super() }}
+{% endblock %}
+
+{% block content %}
+			<table class="table">
+				<thead>
+					<tr>
+						<th>
+							#
+						</th>
+						<th>
+							종목코드
+						</th>
+						<th>
+							회사명
+						</th>
+						<th>
+							업종
+						</th>
+					</tr>
+				</thead>
+				<tbody>
+                {% for stock in stocks %}
+					<tr>
+						<td>
+							{{ loop.index }}
+						</td>
+						<td>
+							{{ stock.stock_cd }}
+						</td>
+						<td>
+							{{ stock.company_name }}
+						</td>
+						<td>
+							{{ stock.type_of_biz }}
+						</td>
+					</tr>
+                {% endfor %}
+				</tbody>
+			</table>
+{% endblock %}
