@@ -16,7 +16,9 @@ import pandas as pd
 from sqlalchemy import create_engine
 from finance.database import dao
 from finance.model.stock import Stock
+from finance.model.stock_price import StockPrice
 from finance.finance_blueprint import finance
+from finance.finance_logger import Log
 
 def download_stock_codes(market=None, delisted=False):
     """MARKET_CODE_DICT 중 하나의 종목코드 정보 전체를 DataFrame으로 가져온다."""
@@ -86,6 +88,7 @@ def extract_daily_info(info):
     tran_volumn = re.findall(stock_price_pattern, info[3])
 
     daily_info['거래량'] = tran_volumn[0]
+    return daily_info
 
     
 def get_next_page(html, page):
@@ -98,18 +101,44 @@ def get_next_page(html, page):
         return 0
 
 
-def save_stock_info(url, page):
+def save_stock_price(stock_code, page=1):
     """특정 페이지의 일자별 주가정보를 모두 추출하여 테이블에 저장한다."""
+    STOCK_INFO_URL = \
+        'http://finance.daum.net/item/quote_yyyymmdd_sub.daum?modify=1=&code={code}&page='
+    url=STOCK_INFO_URL.replace('{code}', stock_code)
+    
     page_html = visit_page(url+str(page))
     stock_info = extract_stock_info(page_html)
     for info in stock_info:
         daily_info = extract_daily_info(info)
-    # insert_stock_info(stock_info)
+        try:
+            exist = dao.query(StockPrice). \
+                    filter_by(종목코드=stock_code,거래일자=daily_info['날짜']). \
+                    first()
+            if not exist:
+                stock_price = StockPrice(stock_code,
+                                         daily_info['날짜'],
+                                         daily_info['시가'].replace(',',''),
+                                         daily_info['고가'].replace(',',''),
+                                         daily_info['저가'].replace(',',''),
+                                         daily_info['종가'].replace(',',''),
+                                         daily_info['거래량'].replace(',',''))
+                dao.add(stock_price)
+                dao.commit()
+        except Exception as e:
+            error = "DB에러발생 : " + str(e)
+            Log.error(error)
+            dao.rollback()
+            raise e
+        
 
     next_page = get_next_page(page_html, page)
-    print(next_page)
+
     if next_page > 0:
-        save_stock_info(url, next_page)
+        return save_stock_price(stock_code, next_page)    
+    else:
+        return render_template('save_stock_info.html',
+                               stock_code=stock_code)
 
 
 def get_postgres_engine():
@@ -127,15 +156,11 @@ def show_stock_list():
 
 
 @finance.route('/save_stock_info/<stock_code>')
-def save_all_stock_info(stock_code):
+def save_stock_info(stock_code):
     #종목코드 조회
     #종목코드별 일일주가정보저장
-    STOCK_INFO_URL = \
-        'http://finance.daum.net/item/quote_yyyymmdd_sub.daum?modify=1=&code={code}&page='
-
-    if stock_code :
-        save_stock_info(STOCK_INFO_URL.replace('{code}', code))
-    
-    return render_template('save_stock_info.html',
-                           stock_code=stock_code)
+    if stock_code:
+        return save_stock_price(stock_code)
+    else:
+        return render_template('save_stock_info.html')
 
