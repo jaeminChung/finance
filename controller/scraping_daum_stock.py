@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-    finance.controller.scraping_daum_stock
+    playground.controller.scraping_daum_stock
     ~~~~~~~~~~~~~~~~~~~~~~~~~
 
     종목정보 조회, 주가 정보 저장
@@ -14,11 +14,11 @@ import urllib.request
 
 import pandas as pd
 from sqlalchemy import create_engine
-from finance.database import dao
-from finance.model.stock import Stock
-from finance.model.stock_price import StockPrice
-from finance.finance_blueprint import finance
-from finance.finance_logger import Log
+from playground.database import dao
+from playground.model.stock import Stock
+from playground.model.stock_price import StockPrice
+from playground.playground_blueprint import playground
+from playground.playground_logger import Log
 
 def download_stock_codes(market=None, delisted=False):
     """MARKET_CODE_DICT 중 하나의 종목코드 정보 전체를 DataFrame으로 가져온다."""
@@ -147,7 +147,7 @@ def get_postgres_engine():
     return _engine
 
 
-@finance.route('/show_stock_list')
+@playground.route('/show_stock_list')
 def show_stock_list():
     stock_list = dao.query(Stock).order_by(Stock.company_name.asc()).all()
     
@@ -155,7 +155,7 @@ def show_stock_list():
                            stocks=stock_list)
 
 
-@finance.route('/save_stock_info/<stock_code>')
+@playground.route('/save_stock_info/<stock_code>')
 def save_stock_info(stock_code):
     #종목코드 조회
     #종목코드별 일일주가정보저장

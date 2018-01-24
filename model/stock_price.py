@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-    finance.model.stock_price
+    playground.model.stock_price
     ~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
     일별주가정보를 담기 위한 model.
@@ -9,9 +9,9 @@
 
 from sqlalchemy import Column, Integer, Float, String, ForeignKey, DateTime
 
-from finance.model.stock import Stock
+from playground.model.stock import Stock
 
-from finance.model import Base
+from playground.model import Base
 
 
 '''    

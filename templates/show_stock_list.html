@@ -29,7 +29,7 @@
 							{{ loop.index }}
 						</td>
 						<td>
-							<a href="{{ url_for('finance.save_stock_info', stock_code=stock.stock_cd) }}">{{ stock.stock_cd }}</a>
+							<a href="{{ url_for('playground.save_stock_info', stock_code=stock.stock_cd) }}">{{ stock.stock_cd }}</a>
 						</td>
 						<td>
 							{{ stock.company_name }}

@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-    finance.controller.download_cartoon
+    playground.controller.download_cartoon
     ~~~~~~~~~~~~~~~~~~~~~~~~~
 
     내려받은 만화 압축해서 다운로드 링크 보여주기
@@ -11,13 +11,13 @@ from flask import render_template, request, redirect, url_for
 from functools import wraps
 from wtforms import Form, TextField, PasswordField, HiddenField, validators
 
-from finance.finance_logger import Log
-from finance.finance_blueprint import finance
+from playground.playground_logger import Log
+from playground.playground_blueprint import playground
 import zipfile, shutil
 from zipfile import ZipFile
 
 
-@finance.route('/zip_cartoon/<title_id>')
+@playground.route('/zip_cartoon/<title_id>')
 def zip_cartoon(title_id):
     """다운로드 받은 만화 폴더 압축하고 해당 폴더는 지우기"""
 # def dir2zip(dir, zipName, silent, delete):
@@ -32,5 +32,5 @@ def zip_cartoon(title_id):
 
     return render_template('save_cartoon.html')
 
-@finance.route('/save_cartoon/<title_id>')
+@playground.route('/save_cartoon/<title_id>')
 def save_cartoon(title_id):

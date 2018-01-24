@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-    finance.database
+    playground.database
     ~~~~~~~~~~~~~~~~~
 
     DB 연결 및 쿼리 사용을 위한 공통 모듈.
@@ -33,9 +33,9 @@ class DBManager:
     
     @staticmethod
     def init_db():
-        from finance.model import stock
-        from finance.model import stock_price
-        from finance.model import Base
+        from playground.model import stock
+        from playground.model import stock_price
+        from playground.model import Base
         Base.metadata.create_all(bind=DBManager.__engine)
 
 dao = None        

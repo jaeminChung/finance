@@ -9,7 +9,7 @@ source.onmessage = function(event) {
     $('.progress-bar-label').text(event.data+'/{{ total }}');
     if(event.data == {{ total }}) {
         source.close();
-        location.href='{{ url_for('finance.zip_cartoon' }}/{{ title_id }}';
+        location.href='{{ url_for('playground.zip_cartoon' }}/{{ title_id }}';
     }
 }
 </script>

@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-    finance.cache_session
+    playground.cache_session
     ~~~~~~~~~~~~~~~~~~~~~~
 
     Cache를 이용한 서버 세션 모듈.

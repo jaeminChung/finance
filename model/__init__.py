@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 """
-    finance.model
+    playground.model
     ~~~~~~~~~~~~~~
 
-    finance 어플리케이션에 적용될 model에 대한 패키지 초기화.
+    playground 어플리케이션에 적용될 model에 대한 패키지 초기화.
 """
 
 

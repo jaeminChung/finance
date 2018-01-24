@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-    finance.controller.daum_cartoon
+    playground.controller.daum_cartoon
     ~~~~~~~~~~~~~~~~~~~~~~~~~
 
     다음 만화 내려받기
@@ -13,9 +13,9 @@ from functools import wraps
 from werkzeug import check_password_hash
 from wtforms import Form, TextField, PasswordField, HiddenField, validators
 
-from finance.database import dao
-from finance.finance_logger import Log
-from finance.finance_blueprint import finance
+from playground.database import dao
+from playground.playground_logger import Log
+from playground.playground_blueprint import playground
 import urllib.request, re, os, json
 from os import path
 
@@ -56,7 +56,7 @@ def get_daum_cartoon_id_list(title_id):
     return ids
 
     
-@finance.route('/daum_cartoon')
+@playground.route('/daum_cartoon')
 def daum_cartoon_form():
     """다음 만화 목록 표시해야하지만,
        일단 만화 아이디 받아서 내려받기"""
@@ -64,7 +64,7 @@ def daum_cartoon_form():
     return render_template('daum_cartoon.html')
 
 
-@finance.route('/daum_cartoon', methods=['POST'])
+@playground.route('/daum_cartoon', methods=['POST'])
 def daum_cartoon():
     title_id = request.form['title_id']
     total = len(get_daum_cartoon_id_list(title_id))
@@ -76,7 +76,7 @@ def daum_cartoon():
                            total=total)
 
 
-@finance.route('/daum_cartoon_download/<title_id>/<total>')
+@playground.route('/daum_cartoon_download/<title_id>/<total>')
 def daum_cartoon_download(title_id, total) :
     ids = get_daum_cartoon_id_list(title_id)
 

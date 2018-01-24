@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-    finance.model.stock
+    playground.model.stock
     ~~~~~~~~~~~~~~~~~~~
 
     kospi 종목 정보를 담을 model.
@@ -10,7 +10,7 @@
 from sqlalchemy import Column, Integer, String
 from sqlalchemy.orm import relationship
 
-from finance.model import Base
+from playground.model import Base
 
 
 class Stock(Base):

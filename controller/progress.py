@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-    finance.controller.progress
+    playground.controller.progress
     ~~~~~~~~~~~~~~~~~~~~~~~~~
 
     상태표시 테스트
@@ -9,16 +9,16 @@
 
 from flask import render_template, Response, redirect \
                 , url_for
-from finance.finance_blueprint import finance
+from playground.playground_blueprint import playground
 import time
 
-@finance.route('/page')
+@playground.route('/page')
 def get_page():
     # return redirect(url_for('.progress'))
     return render_template('progress.html')
 
 
-@finance.route('/progress')
+@playground.route('/progress')
 def progress():
     def generate():
         x = 0
